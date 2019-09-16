@@ -332,7 +332,7 @@ int main(int argc, char** argv) {
     char filename[112];
     getFileName(filename, sizeof(filename), velodyne_device_type, name);
 
-    createDir("/media/usb/pcap");
+    createDir("../../../../media/usb/");
     output = fopen(filename, "wb");
 
     if (output == NULL) {
