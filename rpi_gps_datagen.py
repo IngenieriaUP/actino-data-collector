@@ -183,5 +183,5 @@ class DataGenerator:
     def save2file(self, filepath, nmea_sent=None):
         if nmea_sent == None:
             nmea_sent = self.gen_sentence()
-        with open(filepath, 'a'):
+        with open(filepath, 'a') as f:
             f.write(nmea_sent)
