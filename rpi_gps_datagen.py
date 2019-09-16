@@ -174,7 +174,7 @@ class DataGenerator:
         nmea_sent = self.gen_sentence()
         # TODO: send nmea data to LiDAR connected to rpi3
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #UDP
-        sock.sendto(bytes(nmea_sent, "utf-8"), (UDP_IP, UDP_PORT))
+        sock.sendto(bytes(nmea_sent, "utf-8"), (udp_ip, udp_port))
         if save:
             save2file(filepath, nmea_sent)
         print(nmea_sent)
