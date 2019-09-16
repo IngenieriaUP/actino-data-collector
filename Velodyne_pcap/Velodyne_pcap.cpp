@@ -115,7 +115,7 @@ typedef struct {
 int write_file_header(FILE* output_file) {
     /* 24(4+2+2+4+4+4+4)-byte pcap file header */
     // struct pcap_file_header {
-    //     4   bpf_u_int32 magic; 
+    //     4   bpf_u_int32 magic;
     //     2   u_short version_major;
     //     2   u_short version_minor;
     //     4   bpf_int32 thiszone;     /* gmt to local correction */
@@ -175,7 +175,7 @@ int getFileName(char* filename, int len, const char* veledyne_device_type, const
     #ifdef __WINDOWS_
         _snprintf(filename, len, ".\\pcap\\%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #else
-        _snprintf(filename, len, "./pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
+        _snprintf(filename, len, "/media/usb/pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #endif
     }
 
