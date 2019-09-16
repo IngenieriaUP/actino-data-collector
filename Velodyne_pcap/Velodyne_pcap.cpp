@@ -175,7 +175,7 @@ int getFileName(char* filename, int len, const char* veledyne_device_type, const
     #ifdef __WINDOWS_
         _snprintf(filename, len, ".\\pcap\\%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #else
-        _snprintf(filename, len, "/media/usb/pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
+        _snprintf(filename, len, "../../../../media/usb/pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #endif
     }
 
