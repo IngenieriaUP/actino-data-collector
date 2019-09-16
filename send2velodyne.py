@@ -27,7 +27,7 @@ if __name__ == "__main__":
                         help="Filepath string to save nmea sentences.")
     args = parser.parse_args()
 
-    UDP_IP = int(args.lidar_port)
+    UDP_IP = args.lidar_port
     connection_string = args.connect
     save_filepath = args.filepath
 
