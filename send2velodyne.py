@@ -3,7 +3,7 @@ import time
 import RPi.GPIO as GPIO
 from datetime import timedelta
 from dronekit import connect
-from rpi_datagen import DataGenerator
+from rpi_gps_datagen import DataGenerator
 from timeloop import Timeloop
 
 def PPS(pin, pulse_duration):
