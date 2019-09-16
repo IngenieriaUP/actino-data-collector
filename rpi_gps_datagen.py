@@ -142,7 +142,7 @@ class DataGenerator:
 
         nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},\
                      {lat_sign},{lon_val},{lon_sign},{self.groundspeed},\
-                     {self.cmg},{self.utc_date},{self.magnetic_var},E"
+                     {self.course_made_good},{self.utc_date},{self.magnetic_var},E"
 
         checksum = make_nmea_checksum(nmea_str)
         nmea_str = "$" + nmea_str + "*" + str(checksum)
