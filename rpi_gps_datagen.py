@@ -138,12 +138,11 @@ class DataGenerator:
 
     def gen_sentence(self):
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
-        lon_val, lon_sign =  decdeg2dms(self.global_frame.lat, "lon")
+        lon_val, lon_sign =  decdeg2dms(self.global_frame.lon, "lon")
 
-        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{self.lat_val},\
-                     {self.lat_sign},{self.lon_val},{self.lon_sign},\
-                     {self.groundspeed},{self.cmg},{self.utc_date},\
-                     {self.magnetic_var},E"
+        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},\
+                     {lat_sign},{lon_val},{lon_sign},{self.groundspeed},\
+                     {self.cmg},{self.utc_date},{self.magnetic_var},E"
 
         checksum = make_nmea_checksum(nmea_str)
         nmea_str = "$" + nmea_str + "*" + str(checksum)
