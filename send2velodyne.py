@@ -27,7 +27,7 @@ if __name__ == "__main__":
                         help="Filepath string to save nmea sentences.")
     args = parser.parse_args()
 
-    UDP_IP = args.lidar_port
+    UDP_IP = int(args.lidar_port)
     connection_string = args.connect
     save_filepath = args.filepath
 
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     @t1.job(interval=timedelta(seconds=1))
     def send_data_every_1s():
-        datagen.send_sentence(udp_ip=UDP_IP, udp_port="10110", save=True, filepath=save_filepath)
+        datagen.send_sentence(udp_ip=UDP_IP, udp_port=10110, save=True, filepath=save_filepath)
         print("send data job")
 
     @t1.job(interval=timedelta(seconds=1))
