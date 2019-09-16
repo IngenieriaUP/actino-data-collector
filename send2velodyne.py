@@ -21,11 +21,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Send NMEA Sentence and PPS to Velodyne LiDAR')
     parser.add_argument('--connect',
                         help="Vehicle connection target string.")
+    parser.add_argument('--lidar_port',
+                        help="IP Port string to send dato to LiDAR")
     parser.add_argument('--filepath',
                         help="Filepath string to save nmea sentences.")
     args = parser.parse_args()
 
-    UDP_IP = args.connect.split(":")[1]
+    UDP_IP = args.lidar_port
     connection_string = args.connect
     save_filepath = args.filepath
 
