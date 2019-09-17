@@ -175,7 +175,7 @@ int getFileName(char* filename, int len, const char* veledyne_device_type, const
     #ifdef __WINDOWS_
         _snprintf(filename, len, ".\\pcap\\%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #else
-        _snprintf(filename, len, "../../../../media/usb/pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
+        _snprintf(filename, len, "/media/usb/pcap/%s_%s[%s].pcap", name, timestr, veledyne_device_type);
     #endif
     }
 
@@ -332,7 +332,7 @@ int main(int argc, char** argv) {
     char filename[112];
     getFileName(filename, sizeof(filename), velodyne_device_type, name);
 
-    createDir("../../../../media/usb/");
+    createDir("/media/usb/pcap");
     output = fopen(filename, "wb");
 
     if (output == NULL) {
