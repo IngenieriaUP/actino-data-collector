@@ -119,6 +119,9 @@ class DataGenerator:
         self.utc_time = utc.time().strftime("%H%M%S")
         self.utc_date = utc.date().strftime("%d%m%y")
 
+    def __str__(self):
+        return f"{self.utc_time}, {self.utc_date}, {self.global_frame.lat}, {self.global_frame.lon}, {self.global_frame.alt}, {self.attitude.yaw}, {self.attitude.roll}, {self.attitude.pitch}"
+
     def update_attr(self, attr_name, value):
         if attr_name not in ['location.global_frame', 'location.local_frame', 'location.attitude', 'groundspeed']:
             pass
@@ -170,7 +173,6 @@ class DataGenerator:
             NMEA formated sentence.
         """
         nmea_sent = self.gen_sentence()
-        # TODO: send nmea data to LiDAR connected to rpi3
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #UDP
         sock.sendto(bytes(nmea_sent, "utf-8"), (udp_ip, udp_port))
         if save:
@@ -183,3 +185,5 @@ class DataGenerator:
             nmea_sent = self.gen_sentence()
         with open(filepath, 'a') as f:
             f.write(nmea_sent+"\n")
+        with open("custom"+filepath, 'a') as f:
+            f.write(self.__str__()+"\n")
