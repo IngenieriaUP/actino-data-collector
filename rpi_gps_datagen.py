@@ -113,7 +113,7 @@ class DataGenerator:
         self.groundspeed = mps2knots(groundspeed)
         self.ekf_ok = "A" if ekf_ok else "V" # A: OK, V: warning
         self.course_made_good = 0.0 # TODO: function to calculate and update CMG
-        self.magnetic_variation = "0.0,E" # TODO: set listener to extract this data
+        self.magnetic_variation = 0.0 # TODO: set listener to extract this data
 
         utc = datetime.datetime.utcnow()
         self.utc_time = utc.time().strftime("%H%M%S")
@@ -144,7 +144,7 @@ class DataGenerator:
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
         lon_val, lon_sign =  decdeg2dms(self.global_frame.lon, "lon")
 
-        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},{lat_sign},{lon_val},{lon_sign},{self.groundspeed},{self.course_made_good},{self.utc_date},{self.magnetic_variation},E"
+        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},{lat_sign},{lon_val},{lon_sign},{self.groundspeed:06.2f},{self.course_made_good:06.2f},{self.utc_date},{self.magnetic_variation:06.2f},E"
 
         checksum = make_nmea_checksum(nmea_str)
         nmea_str = "$" + nmea_str + "*" + str(checksum)
