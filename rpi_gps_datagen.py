@@ -185,5 +185,5 @@ class DataGenerator:
             nmea_sent = self.gen_sentence()
         with open(filepath, 'a') as f:
             f.write(nmea_sent+"\n")
-        with open("custom"+filepath, 'a') as f:
+        with open(filepath+".custom", 'a') as f:
             f.write(self.__str__()+"\n")
