@@ -182,4 +182,4 @@ class DataGenerator:
         if nmea_sent == None:
             nmea_sent = self.gen_sentence()
         with open(filepath, 'a') as f:
-            f.write(nmea_sent)
+            f.write(nmea_sent+"\n")
