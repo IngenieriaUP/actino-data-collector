@@ -11,10 +11,10 @@ def PPS(pin, pulse_duration):
     Send pulse per second via a rpi gpio pin to Velodyne LiDAR.
     """
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(pin,GPIO.OUT)
-    GPIO.output(pin,1)
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, 1)
     time.sleep(pulse_duration)
-    GPIO.output(pin,0)
+    GPIO.output(pin, 0)
     GPIO.cleanup()
 
 if __name__ == "__main__":
@@ -28,22 +28,25 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     UDP_IP = args.lidar_port
-    connection_string = args.connect
-    save_filepath = args.filepath
+    CONNECTION_STRING = args.connect
+    SAVE_FILEPATH = args.filepath
 
-    print("Connecting to vehicle on {}".format(connection_string))
-    vehicle = connect(connection_string, wait_ready=True)
+    print("Connecting to vehicle on {}".format(CONNECTION_STRING))
+    vehicle = connect(CONNECTION_STRING, wait_ready=True)
 
     datagen = DataGenerator(vehicle.location.global_frame,
                             vehicle.location.local_frame,
                             vehicle.attitude, vehicle.groundspeed,
                             vehicle.ekf_ok)
 
-    #  Demonstrate getting callback on any vehicle attribute change
+
     def wildcard_callback(self, attr_name, value):
+        """
+        Callback on any vehicle attribute change.
+        """
         datagen.update_attr(attr_name, value)
 
-    # Add attribute callback detecting any ('*') attribute change
+    # Add attribute listener detecting any ('*') attribute change
     vehicle.add_attribute_listener('*', wildcard_callback)
 
     # Use timeloop module to schedule repetitive tasks
@@ -51,7 +54,7 @@ if __name__ == "__main__":
 
     @t1.job(interval=timedelta(seconds=1))
     def send_data_every_1s():
-        datagen.send_sentence(udp_ip=UDP_IP, udp_port=10110, save=True, filepath=save_filepath)
+        datagen.send_sentence(udp_ip=UDP_IP, udp_port=10110, save=True, filepath=SAVE_FILEPATH)
         print("send data job")
 
     @t1.job(interval=timedelta(seconds=1))
