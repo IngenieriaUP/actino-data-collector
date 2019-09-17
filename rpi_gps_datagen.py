@@ -138,6 +138,7 @@ class DataGenerator:
             self.groundspeed = mps2knots(value)
         elif attr_name == 'ekf_ok':
             self.ekf_ok = "A" if value else "V"
+        print(f"{attr_name} update as {value}")
 
     def gen_sentence(self):
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
@@ -185,5 +186,6 @@ class DataGenerator:
             nmea_sent = self.gen_sentence()
         with open(filepath, 'a') as f:
             f.write(nmea_sent+"\n")
+        print(self)
         with open(filepath+".custom", 'a') as f:
             f.write(self.__str__()+"\n")
