@@ -81,3 +81,29 @@ Check this: https://raspberrypi.stackexchange.com/questions/68894/cant-install-l
 ```sh
 (.env) $ pip install lxml
 ```
+
+# Run commands when Raspberry Pi boots
+
+### 1. Edit rc.local file:
+
+```sh
+$ sudo nano /etc/rc.local
+```
+
+### 2. Add the command line in rc.local file (e.g. run a python script at boot):
+
+```sh
+...
+
+sudo python /<path_to_file>/<script_name>.py
+
+exit 0
+```
+
+### 3. To save changes and exit press "Ctrl + X" then "Y" and finally "Enter"
+
+### 4. Reboot to test:
+
+```sh
+$ sudo reboot
+```
