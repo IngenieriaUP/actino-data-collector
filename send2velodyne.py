@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument('--lidar_port',
                         help="IP Port string to send dato to LiDAR")
     parser.add_argument('--filepath',
-                        help="Filepath string to save nmea sentences.")
+                        help="Filepath string to save nmea sentences and imu data in txt.")
     args = parser.parse_args()
 
     UDP_IP = args.lidar_port
@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     @t1.job(interval=timedelta(seconds=1))
     def send_pps_every_1s():
-        PPS(12, 0.001)
+        PPS(12, 0.01)
         print("send pps job")
 
     t1.start(block=True)
