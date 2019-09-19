@@ -124,21 +124,26 @@ class DataGenerator:
 
     def update_attr(self, attr_name, value):
         if attr_name not in ['location.global_frame', 'location.local_frame', 'attitude', 'groundspeed', "ekf_ok"]:
+            print(f"{attr_name} update passed")
             pass
         elif attr_name == 'location.global_frame':
             self.global_frame = value
+            print(f"{attr_name} update as {value}")
         elif attr_name == 'location.local_frame':
             self.local_frame = value
-        elif attr_name == 'location.attitude':
+            print(f"{attr_name} update as {value}")
+        elif attr_name == 'attitude':
             utc = datetime.datetime.utcnow()
             self.utc_time = utc.time().strftime("%H%M%S")
             self.utc_date = utc.date().strftime("%d%m%y")
             self.attitude = value
+            print(f"{attr_name} update as {value}")
         elif attr_name == 'groundspeed':
             self.groundspeed = value
+            print(f"{attr_name} update as {value}")
         elif attr_name == 'ekf_ok':
             self.ekf_ok = "A" if value else "V"
-        print(f"{attr_name} update as {value}")
+            print(f"{attr_name} update as {value}")
 
     def gen_sentence(self):
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
