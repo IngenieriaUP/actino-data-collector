@@ -1,8 +1,8 @@
 import dronekit_sitl
 from dronekit import connect, VehicleMode
 
+# Connection
 try:
-    #connection
     print("Connecting to vehicle on '/dev/ttyACM0'")
     vehicle = connect ('/dev/ttyACM0', wait_ready = True, baud = 57600)
     sitl = False
