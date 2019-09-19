@@ -253,39 +253,42 @@ int main(int argc, char** argv) {
         exit(1);
     }
 
-    /* Print the list */
-    for (d = alldevs; d; d = d->next) {
-        printf("%d. %s", ++i, d->name);
-        if (d->description)
-            printf(" (%s)\n", d->description);
-        else
-            printf(" (No description available)\n");
-    }
-    if (i == 0) {
-        printf("\nNo interfaces found! Make sure libpcap is installed and pcap driver is running.\n");
-        return -1;
-    }
+    /* Always select eth0 */
 
-    printf("Enter the interface number (1-%d):", i);
-    scanf("%d", &inum);
+    // /* Print the list */
+    // for (d = alldevs; d; d = d->next) {
+    //     printf("%d. %s", ++i, d->name);
+    //     if (d->description)
+    //         printf(" (%s)\n", d->description);
+    //     else
+    //         printf(" (No description available)\n");
+    // }
+    // if (i == 0) {
+    //     printf("\nNo interfaces found! Make sure libpcap is installed and pcap driver is running.\n");
+    //     return -1;
+    // }
+    //
+    // printf("Enter the interface number (1-%d):", i);
+    // scanf("%d", &inum);
+    //
+    // /* Check if the user specified a valid adapter */
+    // if (inum < 1 || inum > i) {
+    //     printf("\nAdapter number out of range.\n");
+    //
+    //     /* Free the device list */
+    //     pcap_freealldevs(alldevs);
+    //     return -1;
+    // }
+    //
+    // /* Jump to the selected adapter */
+    // for (d = alldevs, i = 0; i < inum - 1; d = d->next, i++);
 
-    /* Check if the user specified a valid adapter */
-    if (inum < 1 || inum > i) {
-        printf("\nAdapter number out of range.\n");
-
-        /* Free the device list */
-        pcap_freealldevs(alldevs);
-        return -1;
-    }
-
-    /* Jump to the selected adapter */
-    for (d = alldevs, i = 0; i < inum - 1; d = d->next, i++);
 
 #ifndef WIN32
     #define PCAP_OPENFLAG_PROMISCUOUS 0
 #endif
     /* Open the adapter */
-    if ((adhandle = pcap_open_live(d->name,                                 // name of the device
+    if ((adhandle = pcap_open_live("eth0",//d->name                          // name of the device
                                    65536,                                   // portion of the packet to capture.
                                    // 65536 grants that the whole packet will be captured on all the MACs.
                                    PCAP_OPENFLAG_PROMISCUOUS,               // promiscuous mode (nonzero means promiscuous)
@@ -310,7 +313,7 @@ int main(int argc, char** argv) {
     bpf_u_int32 net;
     bpf_program filter;
 
-    pcap_lookupnet(d->name, &net, &netmask, errbuf);
+    pcap_lookupnet("eth0"/*d->name*/, &net, &netmask, errbuf);
 
     if (pcap_compile(adhandle, &filter, packet_filter, 1, 0xffffff) < 0) {
         fprintf(stderr, "\nUnable to compile the packet filter. Check the syntax.\n");
@@ -343,7 +346,7 @@ int main(int argc, char** argv) {
 
     write_file_header(output);
 
-    printf("\nlistening on %s... Press Ctrl+C to stop...\n", d->name);
+    printf("\nlistening on %s... Press Ctrl+C to stop...\n", "eth0"/*d->name*/);
 
     /* At this point, we don't need any more the device list. Free it */
     pcap_freealldevs(alldevs);
