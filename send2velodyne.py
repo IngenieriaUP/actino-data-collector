@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     @t1.job(interval=timedelta(seconds=1))
     def send_pps_every_1s():
-        PPS(12, 0.01)
+        PPS(pin=12, pulse_duration=0.01)
         print("send pps job")
 
     t1.start(block=True)
