@@ -1,7 +1,7 @@
 import datetime
 import socket
 
-def decdeg2dms(dd, axis):
+def decdeg2dms(decimal_degree, axis):
     """
     Converts Decimal Degree latitude or longitude value to Degrees Minutes Seconds.
     Source: https://stackoverflow.com/questions/2579535/convert-dd-decimal-degrees-to-dms-degrees-minutes-seconds-in-python
@@ -11,10 +11,10 @@ def decdeg2dms(dd, axis):
 
     Attributes:
     -----------
-    dd: float
+    decimal_degree: float
     Decimal degree value (e.g. 149.165227 or -35.362558)
     axis: str
-    Especify if dd represent latitude ("lat") or longitude ("lon")
+    Especify if decimal_degree represent latitude ("lat") or longitude ("lon")
 
     Returns:
     --------
@@ -24,21 +24,21 @@ def decdeg2dms(dd, axis):
     North, South, East or West orientation
 
     """
-    negative = dd < 0
-    dd = abs(dd)
-    minutes,seconds = divmod(dd*3600,60)
-    degrees,minutes = divmod(minutes,60)
+    negative = decimal_degree < 0
+    decimal_degree = abs(decimal_degree)
+    minutes, seconds = divmod(decimal_degree*3600, 60)
+    degrees, minutes = divmod(minutes, 60)
     minutes += seconds/60
     if negative:
         if axis == "lat":
-          orient = "S"
+            orient = "S"
         elif axis == "lon":
-          orient = "W"
+            orient = "W"
     else:
         if axis == "lat":
-          orient = "N"
+            orient = "N"
         elif axis == "lon":
-          orient = "E"
+            orient = "E"
 
     dms = f"{int(degrees)}{round(minutes,2)}"
     return dms, orient
@@ -110,7 +110,7 @@ class DataGenerator:
         self.global_frame = global_frame
         self.local_frame = local_frame
         self.attitude = attitude
-        self.groundspeed = mps2knots(groundspeed)
+        self.groundspeed = groundspeed
         self.ekf_ok = "A" if ekf_ok else "V" # A: OK, V: warning
         self.course_made_good = 0.0 # TODO: function to calculate and update CMG
         self.magnetic_variation = 0.0 # TODO: set listener to extract this data
@@ -123,7 +123,7 @@ class DataGenerator:
         return f"{self.utc_time}, {self.utc_date}, {self.global_frame.lat}, {self.global_frame.lon}, {self.global_frame.alt}, {self.attitude.yaw}, {self.attitude.roll}, {self.attitude.pitch}"
 
     def update_attr(self, attr_name, value):
-        if attr_name not in ['location.global_frame', 'location.local_frame', 'location.attitude', 'groundspeed']:
+        if attr_name not in ['location.global_frame', 'location.local_frame', 'attitude', 'groundspeed', "ekf_ok"]:
             pass
         elif attr_name == 'location.global_frame':
             self.global_frame = value
@@ -135,7 +135,7 @@ class DataGenerator:
             self.utc_date = utc.date().strftime("%d%m%y")
             self.attitude = value
         elif attr_name == 'groundspeed':
-            self.groundspeed = mps2knots(value)
+            self.groundspeed = value
         elif attr_name == 'ekf_ok':
             self.ekf_ok = "A" if value else "V"
         print(f"{attr_name} update as {value}")
@@ -144,7 +144,7 @@ class DataGenerator:
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
         lon_val, lon_sign =  decdeg2dms(self.global_frame.lon, "lon")
 
-        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},{lat_sign},{lon_val},{lon_sign},{self.groundspeed:06.2f},{self.course_made_good:06.2f},{self.utc_date},{self.magnetic_variation:06.2f},E"
+        nmea_str = f"GPRMC,{self.utc_time},{self.ekf_ok},{lat_val},{lat_sign},{lon_val},{lon_sign},{mps2knots(self.groundspeed):06.2f},{self.course_made_good:06.2f},{self.utc_date},{self.magnetic_variation:06.2f},E"
 
         checksum = make_nmea_checksum(nmea_str)
         nmea_str = "$" + nmea_str + "*" + str(checksum)
