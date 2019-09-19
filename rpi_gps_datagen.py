@@ -106,7 +106,7 @@ class DataGenerator:
     Ref: http://aprs.gids.nl/nmea/#rmc
     """
 
-    def __init__(self, global_frame, local_frame, attitude, groundspeed, ekf_ok):
+    def __init__(self, global_frame, local_frame, attitude, groundspeed, ekf_ok, filepath):
         self.global_frame = global_frame
         self.local_frame = local_frame
         self.attitude = attitude
@@ -114,36 +114,38 @@ class DataGenerator:
         self.ekf_ok = "A" if ekf_ok else "V" # A: OK, V: warning
         self.course_made_good = 0.0 # TODO: function to calculate and update CMG
         self.magnetic_variation = 0.0 # TODO: set listener to extract this data
-
+        self.filepath = filepath
         utc = datetime.datetime.utcnow()
         self.utc_time = utc.time().strftime("%H%M%S")
         self.utc_date = utc.date().strftime("%d%m%y")
 
     def __str__(self):
-        return f"{self.utc_time}, {self.utc_date}, {self.global_frame.lat}, {self.global_frame.lon}, {self.global_frame.alt}, {self.attitude.yaw}, {self.attitude.roll}, {self.attitude.pitch}"
+        return f"{self.utc}, {self.utc_time}, {self.utc_date}, {self.global_frame.lat}, {self.global_frame.lon}, {self.global_frame.alt}, {self.attitude.yaw}, {self.attitude.roll}, {self.attitude.pitch}"
 
     def update_attr(self, attr_name, value):
         if attr_name not in ['location.global_frame', 'location.local_frame', 'attitude', 'groundspeed', "ekf_ok"]:
-            print(f"{attr_name} update passed")
+            # print(f"{attr_name} update passed")
             pass
         elif attr_name == 'location.global_frame':
             self.global_frame = value
-            print(f"{attr_name} update as {value}")
+            self.save2file(is_nmea=False)
+            # print(f"{attr_name} update as {value}")
         elif attr_name == 'location.local_frame':
             self.local_frame = value
-            print(f"{attr_name} update as {value}")
+            # print(f"{attr_name} update as {value}")
         elif attr_name == 'attitude':
             utc = datetime.datetime.utcnow()
             self.utc_time = utc.time().strftime("%H%M%S")
             self.utc_date = utc.date().strftime("%d%m%y")
             self.attitude = value
-            print(f"{attr_name} update as {value}")
+            self.save2file(is_nmea=False)
+            # print(f"{attr_name} update as {value}")
         elif attr_name == 'groundspeed':
             self.groundspeed = value
-            print(f"{attr_name} update as {value}")
+            # print(f"{attr_name} update as {value}")
         elif attr_name == 'ekf_ok':
             self.ekf_ok = "A" if value else "V"
-            print(f"{attr_name} update as {value}")
+            # print(f"{attr_name} update as {value}")
 
     def gen_sentence(self):
         lat_val, lat_sign =  decdeg2dms(self.global_frame.lat, "lat")
@@ -156,7 +158,7 @@ class DataGenerator:
 
         return nmea_str
 
-    def send_sentence(self, udp_ip, udp_port, save=False, filepath=None):
+    def send_sentence(self, udp_ip, udp_port, save=False):
         """
         Send generated NMEA sentence to LiDAR sensor.
 
@@ -182,15 +184,15 @@ class DataGenerator:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #UDP
         sock.sendto(bytes(nmea_sent, "utf-8"), (udp_ip, udp_port))
         if save:
-            self.save2file(filepath, nmea_sent)
-        print(nmea_sent)
+            self.save2file(is_nmea=True, nmea_sent=nmea_sent)
         return nmea_sent
 
-    def save2file(self, filepath, nmea_sent=None):
-        if nmea_sent == None:
-            nmea_sent = self.gen_sentence()
-        with open(filepath, 'a') as f:
-            f.write(nmea_sent+"\n")
-        print(self)
-        with open(filepath+".custom", 'a') as f:
-            f.write(self.__str__()+"\n")
+    def save2file(self, is_nmea, nmea_sent=None):
+        if is_nmea:
+            if nmea_sent == None:
+                nmea_sent = self.gen_sentence()
+            with open(self.filepath, 'a') as f:
+                f.write(nmea_sent+"\n")
+        else:
+            with open(self.filepath+".custom", 'a') as f:
+                f.write(self.__str__()+"\n")

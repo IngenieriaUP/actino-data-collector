@@ -37,7 +37,7 @@ if __name__ == "__main__":
     datagen = DataGenerator(vehicle.location.global_frame,
                             vehicle.location.local_frame,
                             vehicle.attitude, vehicle.groundspeed,
-                            vehicle.ekf_ok)
+                            vehicle.ekf_ok, SAVE_FILEPATH)
 
 
     def wildcard_callback(self, attr_name, value):
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     @t1.job(interval=timedelta(seconds=1))
     def send_data_every_1s():
-        datagen.send_sentence(udp_ip=UDP_IP, udp_port=10110, save=True, filepath=SAVE_FILEPATH)
+        datagen.send_sentence(udp_ip=UDP_IP, udp_port=10110, save=True)
         print("send data job")
 
     @t1.job(interval=timedelta(seconds=1))
