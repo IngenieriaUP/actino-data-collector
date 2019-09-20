@@ -115,9 +115,9 @@ class DataGenerator:
         self.course_made_good = 0.0 # TODO: function to calculate and update CMG
         self.magnetic_variation = 0.0 # TODO: set listener to extract this data
         self.filepath = filepath
-        utc = datetime.datetime.utcnow()
-        self.utc_time = utc.time().strftime("%H%M%S")
-        self.utc_date = utc.date().strftime("%d%m%y")
+        self.utc = datetime.datetime.utcnow()
+        self.utc_time = self.utc.time().strftime("%H%M%S")
+        self.utc_date = self.utc.date().strftime("%d%m%y")
 
     def __str__(self):
         return f"{self.utc}, {self.utc_time}, {self.utc_date}, {self.global_frame.lat}, {self.global_frame.lon}, {self.global_frame.alt}, {self.attitude.yaw}, {self.attitude.roll}, {self.attitude.pitch}"
@@ -134,9 +134,9 @@ class DataGenerator:
             self.local_frame = value
             # print(f"{attr_name} update as {value}")
         elif attr_name == 'attitude':
-            utc = datetime.datetime.utcnow()
-            self.utc_time = utc.time().strftime("%H%M%S")
-            self.utc_date = utc.date().strftime("%d%m%y")
+            self.utc = datetime.datetime.utcnow()
+            self.utc_time = self.utc.time().strftime("%H%M%S")
+            self.utc_date = self.utc.date().strftime("%d%m%y")
             self.attitude = value
             self.save2file(is_nmea=False)
             # print(f"{attr_name} update as {value}")
@@ -196,3 +196,4 @@ class DataGenerator:
         else:
             with open(self.filepath+".custom", 'a') as f:
                 f.write(self.__str__()+"\n")
+                print(self.__str__())
